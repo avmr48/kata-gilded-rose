@@ -1,10 +1,12 @@
 package com.gildedrose;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static com.gildedrose.Functions.assertStateTransition;
 
+@Disabled("use nested test instead")
 class GildedRoseUnitTest {
 
     /**
