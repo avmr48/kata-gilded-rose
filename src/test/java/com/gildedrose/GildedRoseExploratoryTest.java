@@ -130,6 +130,10 @@ public class GildedRoseExploratoryTest {
         updateQualityAndAssertState(app.items[0], BACKSTAGE, 0, 50);
         // but Quality drops to 0 after the concert
         updateQualityAndAssertState(app.items[0], BACKSTAGE, -1, 0);
+
+        // 1 case to kill the mutation at com/gildedrose/GildedRose.java:25
+        app = new GildedRose(of(item(BACKSTAGE, 10, 49)));
+        updateQualityAndAssertState(app.items[0], BACKSTAGE, 9, 50);
     }
 
     @Test
