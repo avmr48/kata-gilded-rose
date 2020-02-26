@@ -89,7 +89,7 @@ public class GildedRoseExploratoryTest {
         updateQualityAndAssertState(app.items[0], AGED_BRIE, 1, 39);
         updateQualityAndAssertState(app.items[0], AGED_BRIE, 0, 40);
 
-        // [Surprise] quality decreases twice as fast once sell by date has passed
+        // [Surprise] quality increases twice as fast once sell by date has passed
         updateQualityAndAssertState(app.items[0], AGED_BRIE, -1, 42);
         updateQualityAndAssertState(app.items[0], AGED_BRIE, -2, 44);
         updateQualityAndAssertState(app.items[0], AGED_BRIE, -3, 46);
