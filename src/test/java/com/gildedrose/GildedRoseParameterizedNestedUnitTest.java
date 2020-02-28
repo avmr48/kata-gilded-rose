@@ -1,8 +1,11 @@
 package com.gildedrose;
 
+import com.gildedrose.Functions.AnItem;
+import com.gildedrose.Functions.ItemList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
@@ -47,7 +50,21 @@ public class GildedRoseParameterizedNestedUnitTest {
     @Target({ElementType.PARAMETER})
     @Retention(RetentionPolicy.RUNTIME)
     @ConvertWith(ItemConverter.class)
-    public @interface Item {
+    public @interface ItemValue {
+    }
+
+    @Test
+    void update_all_items() {
+        Item[] items = ItemList.of(
+                AnItem.of("A", 2, 2),
+                AnItem.of("B", 1, 1)
+        );
+
+        GildedRose gildedRose = new GildedRose(items);
+        gildedRose.updateQuality();
+
+        AnItem.assertState(gildedRose.items[0], "A", 1, 1);
+        AnItem.assertState(gildedRose.items[1], "B", 0, 0);
     }
 
     @DisplayName("For common item")
@@ -62,7 +79,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void system_lowers_both_values_for_every_item2(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.EXAMPLE, input, expected);
         }
@@ -75,7 +92,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_negative(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.EXAMPLE, input, expected);
         }
@@ -88,7 +105,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_stay_negative_if_it_was(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.EXAMPLE, input, expected);
         }
@@ -100,7 +117,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void once_the_sell_by_date_has_passed_quality_degrades_twice_as_fast(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.EXAMPLE, input, expected);
         }
@@ -117,7 +134,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void aged_brie_actually_increases_in_quality_the_older_it_gets(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.AGED_BRIE, input, expected);
         }
@@ -129,7 +146,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void aged_brie_once_the_sell_by_date_has_passed_quality_increases_twice_as_fast(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.AGED_BRIE, input, expected);
         }
@@ -142,7 +159,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_more_than_50(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.AGED_BRIE, input, expected);
         }
@@ -159,7 +176,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_more_than_50_even_below_sellin_0(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.AGED_BRIE, input, expected);
         }
@@ -175,7 +192,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_like_aged_brie_increases_in_quality_as_its_sellin_value_approaches(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
         }
@@ -190,7 +207,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_increases_by_2_when_less_or_equal_than_10_until_5(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
         }
@@ -205,7 +222,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_increases_by_3_when_less_or_equal_than_5_until_1(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
         }
@@ -216,7 +233,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_drop_to_0(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
         }
@@ -233,7 +250,7 @@ public class GildedRoseParameterizedNestedUnitTest {
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_more_than_50_also_for_backstage(
-                @Item Pair<Integer, Integer> input, @Item Pair<Integer, Integer> expected
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
         }

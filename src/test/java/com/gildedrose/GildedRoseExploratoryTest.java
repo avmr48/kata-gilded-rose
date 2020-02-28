@@ -4,8 +4,9 @@ package com.gildedrose;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static com.gildedrose.Functions.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.gildedrose.Functions.AnItem;
+import static com.gildedrose.Functions.AnItem.assertState;
+import static com.gildedrose.Functions.ItemList;
 
 /**
  * Ok, these tests are not good...
@@ -19,10 +20,6 @@ public class GildedRoseExploratoryTest {
     private void updateQualityAndAssertState(Item item, String name, int expectedSellIn, int expectedQuality) {
         app.updateQuality();
         assertState(item, name, expectedSellIn, expectedQuality);
-    }
-
-    private void assertState(Item item, String name, int expectedSellIn, int expectedQuality) {
-        assertThat(item).isEqualToComparingFieldByField(AnItem.of(name, expectedSellIn, expectedQuality));
     }
 
     @Test

@@ -35,6 +35,10 @@ public class Functions {
             app.updateQuality();
             return item;
         }
+
+        static void assertState(Item item, String name, int expectedSellIn, int expectedQuality) {
+            assertThat(item).isEqualToComparingFieldByField(AnItem.of(name, expectedSellIn, expectedQuality));
+        }
     }
 
     /**
