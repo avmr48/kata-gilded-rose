@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import static com.gildedrose.Functions.assertStateTransition;
 
 @DisplayName("Gilded Rose update system")
-public class GildedRoseNestedUnitTest {
+public class GildedRoseParameterizedNestedUnitTest {
 
     /**
      * Convert a test parametr in Pair as input of a test
