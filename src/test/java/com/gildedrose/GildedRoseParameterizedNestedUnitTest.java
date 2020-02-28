@@ -113,7 +113,10 @@ public class GildedRoseParameterizedNestedUnitTest {
         @DisplayName("Once the sell by date has passed, Quality degrades twice as fast")
         @CsvSource(value = {
                 "(0,9) = (-1,7)",
-                "(-1,7) = (-2,5)"
+                "(-1,7) = (-2,5)",
+                "(-1,1) = (-2,0)",
+                "(-1,2) = (-2,0)",
+                "(-1,3) = (-2,1)"
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void once_the_sell_by_date_has_passed_quality_degrades_twice_as_fast(
@@ -142,7 +145,9 @@ public class GildedRoseParameterizedNestedUnitTest {
         @DisplayName("quality increases twice as fast once sell by date has passed")
         @CsvSource(value = {
                 "(0,20) = (-1,22)",
-                "(-1,22) = (-2,24)"
+                "(-1,22) = (-2,24)",
+                "(-1,48) = (-2,50)",
+                "(-1,47) = (-2,49)",
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void aged_brie_once_the_sell_by_date_has_passed_quality_increases_twice_as_fast(
@@ -153,12 +158,25 @@ public class GildedRoseParameterizedNestedUnitTest {
 
         @DisplayName("The Quality of an item is never more than 50")
         @CsvSource(value = {
+                "(2,49) = (1,50)",
                 "(1,50) = (0,50)",
                 "(0,50) = (-1,50)",
                 "(-1,50) = (-2,50)"
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_more_than_50(
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
+        ) {
+            assertStateTransition(Constant.AGED_BRIE, input, expected);
+        }
+
+        @DisplayName("The Quality of an item stay at more than 50 if it was")
+        @CsvSource(value = {
+                "(1,55) = (0,55)",
+                "(0,55) = (-1,55)"
+        }, delimiter = '=')
+        @ParameterizedTest(name = "{0} -> {1}")
+        void the_quality_of_an_item_stay_at_more_than_50_if_it_was(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.AGED_BRIE, input, expected);
@@ -253,6 +271,27 @@ public class GildedRoseParameterizedNestedUnitTest {
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
             assertStateTransition(Constant.BACKSTAGE, input, expected);
+        }
+    }
+
+    @DisplayName("For Sulfuras item")
+    @Nested
+    class Sulfuras {
+
+        @DisplayName("“Sulfuras”, being a legendary item, never has to be sold or decreases in Quality")
+        @CsvSource(value = {
+                "(5,40) = (5,40)",
+                "(5,50) = (5,50)",
+                "(-1,40) = (-1,40)",
+                "(-1,50) = (-1,50)",
+                "(1,0) = (1,0)",
+                "(-1,0) = (-1,0)",
+        }, delimiter = '=')
+        @ParameterizedTest(name = "{0} -> {1}")
+        void sulfuras_being_a_legendary_item_never_has_to_be_sold_or_decreases_in_quality(
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
+        ) {
+            assertStateTransition(Constant.SULFURAS, input, expected);
         }
     }
 }
