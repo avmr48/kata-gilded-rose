@@ -16,3 +16,11 @@ but I should do it some day in another branch to compare the trade offs of both 
 
 TODO
 - property based testing (quick check)
+
+### Coverage 
+
+![Jacoco report](https://avmr48.github.io/repositories/kata-gilded-rose/assets/kata-gilded-rose-jacoco.jpg)
+
+### Mutations
+
+![Jacoco report](https://avmr48.github.io/repositories/kata-gilded-rose/assets/kata-gilded-rose-pitest.jpg)
