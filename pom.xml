@@ -18,6 +18,10 @@
         <pitest-maven.version>1.4.11</pitest-maven.version>
         <pitest-junit5-plugin.version>0.12</pitest-junit5-plugin.version>
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+
+        <sonar.projectKey>avmr48_kata-gilded-rose</sonar.projectKey>
+        <sonar.organization>avmr48</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
