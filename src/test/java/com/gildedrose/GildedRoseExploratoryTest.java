@@ -9,10 +9,11 @@ import static com.gildedrose.Functions.AnItem.assertState;
 import static com.gildedrose.Functions.ItemList;
 
 /**
- * Ok, these tests are not good...
- * I just want to cover the code with some examples!
+ * Ok, these tests are not good...?
+ * I just want to cover the code with some examples before touching anything!
+ *
+ * see unit tests for next step
  */
-@Disabled("use unit test instead")
 public class GildedRoseExploratoryTest {
 
     private GildedRose app;
@@ -119,7 +120,7 @@ public class GildedRoseExploratoryTest {
         // but Quality drops to 0 after the concert
         updateQualityAndAssertState(app.items[0], Constant.BACKSTAGE, -1, 0);
 
-        // 1 case to kill the mutation at com/gildedrose/GildedRose.java:25
+        // 1 case to kill the mutation at com/gildedrose/GildedRose.java:25 in original code
         app = new GildedRose(ItemList.of(AnItem.of(Constant.BACKSTAGE, 10, 49)));
         updateQualityAndAssertState(app.items[0], Constant.BACKSTAGE, 9, 50);
         updateQualityAndAssertState(app.items[0], Constant.BACKSTAGE, 8, 50);
