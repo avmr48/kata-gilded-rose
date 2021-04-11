@@ -24,3 +24,7 @@ TODO
 ### Mutations
 
 ![Jacoco report](https://avmr48.github.io/repositories/kata-gilded-rose/assets/kata-gilded-rose-pitest.jpg)
+
+### Sonar Cloud
+
+https://sonarcloud.io/dashboard?id=avmr48_kata-gilded-rose
