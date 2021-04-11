@@ -26,45 +26,66 @@ class GildedRose {
         }
     }
 
-    private void setQuality(Item item, int quality) {
-        if (isQualityAlreadyOutOfBoundFor(item)) {
-            return;
-        }
-        item.quality = quality < 0 ? 0 : Math.min(quality, 50);
-    }
-
-    private boolean isQualityAlreadyOutOfBoundFor(Item item) {
-        return item.quality <= 0 || item.quality >= 50;
-    }
-
     private void updateGeneric(Item item) {
         if (item.sellIn > 0) {
-            setQuality(item, item.quality - 1);
+            decreaseQuality(item, 1);
         } else {
-            setQuality(item, item.quality - 2);
+            decreaseQuality(item, 2);
         }
         item.sellIn--;
     }
 
     private void updateBackstage(Item item) {
         if (item.sellIn > 10) {
-            setQuality(item, item.quality + 1);
+            increaseQuality(item, 1);
         } else if (item.sellIn > 5) {
-            setQuality(item, item.quality + 2);
+            increaseQuality(item, 2);
         } else if (item.sellIn > 0) {
-            setQuality(item, item.quality + 3);
+            increaseQuality(item, 3);
         } else {
-            setQuality(item, 0);
+            setQualityToZero(item);
         }
         item.sellIn--;
     }
 
     private void updateAgedBrie(Item item) {
         if (item.sellIn > 0) {
-            setQuality(item, item.quality + 1);
+            increaseQuality(item, 1);
         } else {
-            setQuality(item, item.quality + 2);
+            increaseQuality(item, 2);
         }
         item.sellIn--;
+    }
+
+    private void setQualityToZero(Item item) {
+        item.quality = 0;
+    }
+
+    private void decreaseQuality(Item item, int decrement) {
+        // negative stay negative
+        if (item.quality <= -1) {
+            return;
+        }
+
+        int newQuality = item.quality - decrement;
+
+        // quality never drop below 0
+        if (newQuality <= -1) {
+            setQualityToZero(item);
+            return;
+        }
+
+        item.quality = newQuality;
+    }
+
+    private void increaseQuality(Item item, int increment) {
+        int newQuality = item.quality + increment;
+
+        // 50 is the max unless it was above already
+        if (item.quality >= 51) {
+            return;
+        }
+
+        item.quality = Math.min(newQuality, 50);
     }
 }

@@ -20,13 +20,14 @@ import java.lang.annotation.Target;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.gildedrose.Functions.assertStateTransition;
+import static com.gildedrose.Functions.AnItem.updateQualityOn;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Gilded Rose update system")
 public class GildedRoseParameterizedNestedUnitTest {
 
     /**
-     * Convert a test parametr in Pair as input of a test
+     * Convert a test parameter in Pair as input of a test
      */
     public static class ItemConverter implements ArgumentConverter {
 
@@ -71,43 +72,21 @@ public class GildedRoseParameterizedNestedUnitTest {
     @Nested
     class ForCommonItem {
 
-        @DisplayName("our system lowers both values for every item")
+        @DisplayName("our system lowers both sellIn and quality for every item")
         @CsvSource(value = {
+                "(20,51) = (19,50)",
+                "(20,50) = (19,49)",
                 "(20,20) = (19,19)",
                 "(10,15) = (9,14)",
-                "(5,4) = (4,3)"
+                "(5,4) = (4,3)",
+                "(-1,1) = (-2,0)"
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void system_lowers_both_values_for_every_item2(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.EXAMPLE, input, expected);
-        }
-
-        @DisplayName("The Quality of an item is never negative")
-        @CsvSource(value = {
-                "(1,0) = (0,0)",
-                "(0,0) = (-1,0)",
-                "(-1,0) = (-2,0)"
-        }, delimiter = '=')
-        @ParameterizedTest(name = "{0} -> {1}")
-        void the_quality_of_an_item_is_never_negative(
-                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
-        ) {
-            assertStateTransition(Constant.EXAMPLE, input, expected);
-        }
-
-        @DisplayName("The Quality of an item stay negative if it was")
-        @CsvSource(value = {
-                "(1,-1) = (0,-1)",
-                "(0,-1) = (-1,-1)",
-                "(-1,-1) = (-2,-1)"
-        }, delimiter = '=')
-        @ParameterizedTest(name = "{0} -> {1}")
-        void the_quality_of_an_item_stay_negative_if_it_was(
-                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
-        ) {
-            assertStateTransition(Constant.EXAMPLE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.EXAMPLE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.EXAMPLE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("Once the sell by date has passed, Quality degrades twice as fast")
@@ -122,7 +101,37 @@ public class GildedRoseParameterizedNestedUnitTest {
         void once_the_sell_by_date_has_passed_quality_degrades_twice_as_fast(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.EXAMPLE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.EXAMPLE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.EXAMPLE, expected.getLeft(), expected.getRight()));
+        }
+
+        @DisplayName("The Quality of an item is never negative")
+        @CsvSource(value = {
+                "(1,0) = (0,0)",
+                "(0,0) = (-1,0)",
+                "(-1,0) = (-2,0)"
+        }, delimiter = '=')
+        @ParameterizedTest(name = "{0} -> {1}")
+        void the_quality_of_an_item_is_never_negative(
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
+        ) {
+            assertThat(updateQualityOn(AnItem.of(Constant.EXAMPLE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.EXAMPLE, expected.getLeft(), expected.getRight()));
+        }
+
+        @DisplayName("The Quality of an item stay negative if it was")
+        @CsvSource(value = {
+                "(2,-1) = (1,-1)",
+                "(1,-1) = (0,-1)",
+                "(0,-1) = (-1,-1)",
+                "(-1,-1) = (-2,-1)",
+        }, delimiter = '=')
+        @ParameterizedTest(name = "{0} -> {1}")
+        void the_quality_of_an_item_stay_negative_if_it_was(
+                @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
+        ) {
+            assertThat(updateQualityOn(AnItem.of(Constant.EXAMPLE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.EXAMPLE, expected.getLeft(), expected.getRight()));
         }
     }
 
@@ -139,7 +148,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void aged_brie_actually_increases_in_quality_the_older_it_gets(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.AGED_BRIE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.AGED_BRIE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.AGED_BRIE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("quality increases twice as fast once sell by date has passed")
@@ -153,7 +163,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void aged_brie_once_the_sell_by_date_has_passed_quality_increases_twice_as_fast(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.AGED_BRIE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.AGED_BRIE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.AGED_BRIE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("The Quality of an item is never more than 50")
@@ -161,17 +172,24 @@ public class GildedRoseParameterizedNestedUnitTest {
                 "(2,49) = (1,50)",
                 "(1,50) = (0,50)",
                 "(0,50) = (-1,50)",
-                "(-1,50) = (-2,50)"
+                "(-1,50) = (-2,50)",
+                "(-2,50) = (-3,50)",
+                "(-2,49) = (-3,50)",
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void the_quality_of_an_item_is_never_more_than_50(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.AGED_BRIE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.AGED_BRIE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.AGED_BRIE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("The Quality of an item stay at more than 50 if it was")
         @CsvSource(value = {
+                // mutation checking upper bound
+                "(1,50) = (0,50)",
+                "(1,51) = (0,51)",
+
                 "(1,55) = (0,55)",
                 "(0,55) = (-1,55)"
         }, delimiter = '=')
@@ -179,7 +197,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void the_quality_of_an_item_stay_at_more_than_50_if_it_was(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.AGED_BRIE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.AGED_BRIE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.AGED_BRIE, expected.getLeft(), expected.getRight()));
         }
 
         // NOTE kills mutation 3
@@ -196,7 +215,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void the_quality_of_an_item_is_never_more_than_50_even_below_sellin_0(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.AGED_BRIE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.AGED_BRIE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.AGED_BRIE, expected.getLeft(), expected.getRight()));
         }
     }
 
@@ -206,13 +226,15 @@ public class GildedRoseParameterizedNestedUnitTest {
 
         @DisplayName("“Backstage passes”, like aged brie, increases in Quality as it’s SellIn value approaches;")
         @CsvSource(value = {
+                "(12,10) = (11,11)",
                 "(11,11) = (10,12)"
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_like_aged_brie_increases_in_quality_as_its_sellin_value_approaches(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.BACKSTAGE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.BACKSTAGE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.BACKSTAGE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("Quality increases by 2 when there are 10 days or less")
@@ -227,7 +249,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void backstage_passes_increases_by_2_when_less_or_equal_than_10_until_5(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.BACKSTAGE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.BACKSTAGE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.BACKSTAGE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("and by 3 when there are 5 days or less")
@@ -242,18 +265,30 @@ public class GildedRoseParameterizedNestedUnitTest {
         void backstage_passes_increases_by_3_when_less_or_equal_than_5_until_1(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.BACKSTAGE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.BACKSTAGE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.BACKSTAGE, expected.getLeft(), expected.getRight()));
         }
         
         @DisplayName("but Quality drops to 0 after the concert")
         @CsvSource(value = {
-                "(0,10) = (-1,0)"
+                "(0,50) = (-1,0)",
+                "(0,49) = (-1,0)",
+
+                "(0,10) = (-1,0)",
+                "(0,1) = (-1,0)",
+                "(0,0) = (-1,0)",
+                "(-1,1) = (-2,0)",
+                "(-1,0) = (-2,0)",
+
+                "(0,-1) = (-1,0)",
+                "(-1,-1) = (-2,0)",
         }, delimiter = '=')
         @ParameterizedTest(name = "{0} -> {1}")
         void backstage_passes_drop_to_0(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.BACKSTAGE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.BACKSTAGE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.BACKSTAGE, expected.getLeft(), expected.getRight()));
         }
 
         @DisplayName("The Quality of an item is never more than 50")
@@ -270,7 +305,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void the_quality_of_an_item_is_never_more_than_50_also_for_backstage(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.BACKSTAGE, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.BACKSTAGE, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.BACKSTAGE, expected.getLeft(), expected.getRight()));
         }
     }
 
@@ -291,7 +327,8 @@ public class GildedRoseParameterizedNestedUnitTest {
         void sulfuras_being_a_legendary_item_never_has_to_be_sold_or_decreases_in_quality(
                 @ItemValue Pair<Integer, Integer> input, @ItemValue Pair<Integer, Integer> expected
         ) {
-            assertStateTransition(Constant.SULFURAS, input, expected);
+            assertThat(updateQualityOn(AnItem.of(Constant.SULFURAS, input.getLeft(), input.getRight())))
+                    .isEqualToComparingFieldByField(AnItem.of(Constant.SULFURAS, expected.getLeft(), expected.getRight()));
         }
     }
 }

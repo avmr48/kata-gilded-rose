@@ -8,22 +8,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Functions {
 
     /**
-     * Assert state transition : AAA
-     */
-    static void assertStateTransition(String name, Pair<Integer, Integer> input, Pair<Integer, Integer> expected) {
-        assertThat(updateQualityOn(AnItem.of(name, input.getLeft(), input.getRight())))
-                .isEqualToComparingFieldByField(AnItem.of(name, expected.getLeft(), expected.getRight()));
-    }
-
-    /**
      * An item
      */
     public static class AnItem {
         /**
          * Factory method: get an item
          */
-        public static Item of(String backstage, int si, int q) {
-            return new Item(backstage, si, q);
+        public static Item of(String type, int sellIn, int quantity) {
+            return new Item(type, sellIn, quantity);
         }
 
         /**
